@@ -17,7 +17,7 @@
 -- - country (varchar, max 50 characters)
 -- - birth_year (integer)
 -- - created_at (timestamp with default current timestamp)
-CREATE TABLE authors (
+CREATE TABLE IF NOT EXISTS authors (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     country VARCHAR(50),
@@ -37,7 +37,17 @@ CREATE TABLE authors (
 -- - available_copies (integer, default 0)
 -- - created_at (timestamp with default current timestamp)
 
--- Your SQL here
+CREATE TABLE IF NOT EXISTS books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    isbn VARCHAR(13) UNIQUE,
+    author_id INTEGER REFERENCES authors(id),
+    publication_year INTEGER,
+    genre VARCHAR(50),
+    price DECIMAL(10, 2),
+    available_copies INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 
 -- Create a 'members' table with:
@@ -49,7 +59,16 @@ CREATE TABLE authors (
 -- - join_date (date, default current date)
 -- - membership_type (varchar: 'basic', 'premium', 'gold')
 
--- Your SQL here
+CREATE TABLE IF NOT EXISTS members(
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    join_date DATE DEFAULT CURRENT_DATE,
+    membership_type VARCHAR(20)
+    CHECK (membership_type IN ('basic', 'premium', 'gold'))
+);
 
 
 
