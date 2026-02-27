@@ -155,34 +155,99 @@ CREATE TABLE IF NOT EXISTS book_genres(
 
 -- Task 2.1: INSERT Operations
 -- Insert at least 5 authors
--- Your SQL here
+INSERT INTO authors (name, country, birth_year)
+VALUES
+    ('Chinua Achebe', 'Nigeria', 1930),
+    ('Isabel Allende', 'Chile', 1942),
+    ('Margaret Atwood', 'Canada', 1939),
+    ('Jorge Luis Borges', 'Argentina', 1899),
+    ('Haruki Murakami', 'Japan', 1949);
 
 
 -- Insert at least 10 books (make sure they reference valid authors)
--- Your SQL here
+INSERT INTO books (title,isbn,author_id,publication_year,genre,price, available_copies)
+VALUES
+    ('Things Fall Apart', '9780385474542', 1, 1958, 'Fiction', 12.99, 5),
+    ('No Longer at Ease', '9780385474559', 1, 1960, 'Fiction', 11.99, 4),
+    ('The House of the Spirits', '9780553383805', 2, 1982, 'Magical Realism', 14.50, 6),
+    ('City of the Beasts', '9780060535031', 2, 2002, 'Adventure', 13.75, 3),
+    ('The Handmaid''s Tale', '9780385490818', 3, 1985, 'Dystopian', 15.00, 7),
+    ('Oryx and Crake', '9780385721677', 3, 2003, 'Science Fiction', 16.25, 4),
+    ('Ficciones', '9780802130303', 4, 1944, 'Short Stories', 10.99, 5),
+    ('Labyrinths', '9780811216999', 4, 1962, 'Philosophical Fiction', 12.50, 2),
+    ('Norwegian Wood', '9780375704024', 5, 1987, 'Romance', 14.20, 8),
+    ('Kafka on the Shore', '9781400079278', 5, 2002, 'Magical Realism', 17.00, 6);
 
 
 -- Insert at least 8 members
--- Your SQL here
+INSERT INTO members (first_name, last_name, email, phone, membership_type)
+VALUES
+    ('Ama', 'Mensah', 'ama.mensah@email.com', '0201234567', 'basic'),
+    ('Kofi', 'Owusu', 'kofi.owusu@email.com', '0242345678', 'premium'),
+    ('Akosua', 'Boateng', 'akosua.boateng@email.com', '0553456789', 'gold'),
+    ('Yaw', 'Asare', 'yaw.asare@email.com', '0274567890', 'basic'),
+    ('Efua', 'Adjei', 'efua.adjei@email.com', '0265678901', 'premium'),
+    ('Kojo', 'Bediako', 'kojo.bediako@email.com', '0546789012', 'gold'),
+    ('Abena', 'Frimpong', 'abena.frimpong@email.com', '0507890123', 'basic'),
+    ('Kwame', 'Darko', 'kwame.darko@email.com', '0238901234', 'premium');
 
 
 -- Insert at least 5 borrowing records
--- Your SQL here
-
+INSERT INTO borrowings (member_id, book_id, borrow_date, due_date, status, fine_amount)
+VALUES
+    (1, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed', 0),
+    (2, 5, CURRENT_DATE - INTERVAL '10 days', CURRENT_DATE + INTERVAL '4 days', 'borrowed', 0),
+    (3, 3, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '5 days', 'overdue', 5.00),
+    (4, 7, CURRENT_DATE - INTERVAL '15 days', CURRENT_DATE - INTERVAL '1 day', 'returned', 0),
+    (5, 10, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed', 0);
 
 
 
 -- Task 2.2: UPDATE Operations
--- Your code here
+-- Update the price of all books published before 2000 by increasing it by 10%
+-- Your SQL here
+
+
+-- Mark all borrowings as 'overdue' where due_date has passed and status is 'borrowed'
+-- Your SQL here
+
+
+-- Update available_copies for a specific book (decrease by 1) when borrowed
+-- Your SQL here
+
+
+-- Change membership_type to 'gold' for members who have borrowed more than 5 books
+-- Your SQL here
 
 
 
 
 -- Task 2.3: DELETE Operations
--- Your code here
+-- Delete all borrowing records that were returned more than 2 years ago
+-- Your SQL here
+
+
+-- Delete members who have never borrowed any books
+-- Your SQL here
+
+
+-- Delete books that have 0 available copies and have never been borrowed
+-- Your SQL here
 
 
 
 
 -- Task 2.4: Complex INSERT
--- Your code here
+-- Insert a new borrowing and automatically update available_copies in books table
+-- Use a transaction to ensure both operations succeed or both fail
+-- Your SQL here
+
+
+-- Insert multiple records using a single INSERT statement with VALUES
+-- Insert 3 genres at once
+-- Your SQL here
+
+
+-- Insert data from a SELECT query (copy all 'premium' members to a new table)
+-- First create the table, then insert
+-- Your SQL here
