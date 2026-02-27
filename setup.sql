@@ -101,7 +101,50 @@ CHECK (price > 0);
 
 
 -- Task 1.3: Create Relationships
--- Your code here
+-- Create a 'borrowings' table with:
+-- - id (primary key)
+-- - member_id (foreign key to members.id, on delete cascade)
+-- - book_id (foreign key to books.id, on delete cascade)
+-- - borrow_date (date, not null, default current date)
+-- - due_date (date, not null)
+-- - return_date (date, nullable)
+-- - status (varchar: 'borrowed', 'returned', 'overdue')
+-- - fine_amount (decimal, default 0)
+
+CREATE TABLE IF NOT EXISTS borrowings (
+    id SERIAL PRIMARY KEY,
+    member_id INTEGER REFERENCES members(id) ON DELETE CASCADE,
+    book_id INTEGER REFERENCES books(id) ON DELETE CASCADE,
+    borrow_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    due_date DATE NOT NULL,
+    return_date DATE,
+    status VARCHAR(20)
+    CHECK (status IN ('borrowed', 'returned', 'overdue')),
+    fine_amount DECIMAL(10,2) DEFAULT 0
+);
+
+
+-- Create a many-to-many relationship between books and genres
+-- Create 'genres' table:
+-- - id (primary key)
+-- - name (varchar, unique, not null)
+
+CREATE TABLE IF NOT EXISTS genres(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+
+-- Create 'book_genres' junction table:
+-- - book_id (foreign key to books.id)
+-- - genre_id (foreign key to genres.id)
+-- - primary key (book_id, genre_id)
+
+CREATE TABLE IF NOT EXISTS book_genres(
+    book_id INTEGER REFERENCES books(id) ON DELETE CASCADE,
+    genre_id INTEGER REFERENCES genres(id) ON DELETE CASCADE,
+    PRIMARY KEY (book_id, genre_id)
+);
 
 
 
@@ -111,7 +154,20 @@ CHECK (price > 0);
 -- ============================================
 
 -- Task 2.1: INSERT Operations
--- Your code here
+-- Insert at least 5 authors
+-- Your SQL here
+
+
+-- Insert at least 10 books (make sure they reference valid authors)
+-- Your SQL here
+
+
+-- Insert at least 8 members
+-- Your SQL here
+
+
+-- Insert at least 5 borrowing records
+-- Your SQL here
 
 
 
