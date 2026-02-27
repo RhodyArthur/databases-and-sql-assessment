@@ -205,21 +205,28 @@ VALUES
 
 -- Task 2.2: UPDATE Operations
 -- Update the price of all books published before 2000 by increasing it by 10%
--- Your SQL here
+UPDATE books SET price = 1.10 * price WHERE publication_year < 2000;
 
 
 -- Mark all borrowings as 'overdue' where due_date has passed and status is 'borrowed'
--- Your SQL here
+UPDATE borrowings SET status = 'overdue' WHERE due_date < CURRENT_DATE AND status = 'borrowed';
 
 
 -- Update available_copies for a specific book (decrease by 1) when borrowed
--- Your SQL here
+UPDATE books SET available_copies = available_copies - 1 WHERE id IN (
+    SELECT book_id
+    FROM borrowings
+    WHERE status = 'borrowed'
+);
 
 
 -- Change membership_type to 'gold' for members who have borrowed more than 5 books
--- Your SQL here
-
-
+UPDATE members SET membership_type = 'gold' WHERE id IN (
+    SELECT member_id
+    FROM borrowings
+    GROUPBY member_id
+    HAVING COUNT(*) > 5
+)
 
 
 -- Task 2.3: DELETE Operations
