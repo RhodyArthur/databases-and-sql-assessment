@@ -226,20 +226,28 @@ UPDATE members SET membership_type = 'gold' WHERE id IN (
     FROM borrowings
     GROUPBY member_id
     HAVING COUNT(*) > 5
-)
+);
 
 
 -- Task 2.3: DELETE Operations
 -- Delete all borrowing records that were returned more than 2 years ago
--- Your SQL here
+DELETE FROM borrowings 
+WHERE return_date IS NOT NULL AND 
+return_date < CURRENT_DATE - INTERVAL '2 years';
 
 
 -- Delete members who have never borrowed any books
--- Your SQL here
+DELETE FROM members 
+WHERE NOT EXISTS
+(SELECT 1
+FROM borrowings 
+WHERE borrowings.member_id = members.id);
 
 
 -- Delete books that have 0 available copies and have never been borrowed
--- Your SQL here
+DELETE FROM books 
+WHERE available_copies = 0 AND 
+NOT EXISTS (SELECT 1 FROM borrowings WHERE borrowings.book_id = books.id);
 
 
 
@@ -247,14 +255,26 @@ UPDATE members SET membership_type = 'gold' WHERE id IN (
 -- Task 2.4: Complex INSERT
 -- Insert a new borrowing and automatically update available_copies in books table
 -- Use a transaction to ensure both operations succeed or both fail
--- Your SQL here
+BEGIN;
+UPDATE books SET available_copies = available_copies - 1 WHERE id = 2 AND available_copies > 0;
+
+INSERT INTO borrowings (member_id, book_id, borrow_date, due_date, status)
+VALUES (6, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed');
+COMMIT;
 
 
 -- Insert multiple records using a single INSERT statement with VALUES
 -- Insert 3 genres at once
--- Your SQL here
+INSERT INTO genres (name)
+VALUES
+('Fantasy'),
+('Biography'),
+('Historical Fiction');
 
 
 -- Insert data from a SELECT query (copy all 'premium' members to a new table)
 -- First create the table, then insert
--- Your SQL here
+CREATE TABLE premium_members AS 
+SELECT *
+FROM members
+WHERE membership_type = 'premium';
