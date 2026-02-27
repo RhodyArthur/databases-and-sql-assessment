@@ -224,7 +224,7 @@ UPDATE books SET available_copies = available_copies - 1 WHERE id IN (
 UPDATE members SET membership_type = 'gold' WHERE id IN (
     SELECT member_id
     FROM borrowings
-    GROUPBY member_id
+    GROUP BY member_id
     HAVING COUNT(*) > 5
 );
 
@@ -259,7 +259,7 @@ BEGIN;
 UPDATE books SET available_copies = available_copies - 1 WHERE id = 2 AND available_copies > 0;
 
 INSERT INTO borrowings (member_id, book_id, borrow_date, due_date, status)
-VALUES (6, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed');
+VALUES (1, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed');
 COMMIT;
 
 
@@ -274,7 +274,7 @@ VALUES
 
 -- Insert data from a SELECT query (copy all 'premium' members to a new table)
 -- First create the table, then insert
-CREATE TABLE premium_members AS 
+CREATE TABLE IF NOT EXISTS premium_members AS 
 SELECT *
 FROM members
 WHERE membership_type = 'premium';
