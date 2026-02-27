@@ -73,7 +73,29 @@ CREATE TABLE IF NOT EXISTS members(
 
 
 -- Task 1.2: Alter Tables
--- Your code here
+-- Add a new column 'biography' (text) to the authors table
+ALTER TABLE authors
+ADD COLUMN biography TEXT;
+
+
+-- Add a constraint to ensure publication_year is not less than 1000
+
+ALTER TABLE books
+ADD CONSTRAINT publication_year_check
+CHECK (publication_year > 1000);
+
+
+-- Create an index on books.isbn for faster lookups
+
+CREATE INDEX idx_books_isbn
+ON books(isbn);
+
+
+-- Add a check constraint to ensure price is positive
+
+ALTER TABLE books
+ADD CONSTRAINT positive_price
+CHECK (price > 0);
 
 
 
