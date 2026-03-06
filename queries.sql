@@ -116,12 +116,43 @@ JOIN genres g
     ON bg.genre_id = g.id;
 
 
-
-
 -- Task 3.4: Aggregations and GROUP BY
--- Your code here
+-- Count total number of books in the library
+SELECT COUNT(*) AS total_books
+FROM books;
+
+-- Get average price of books by genre
+SELECT genre, AVG(price) AS avg_price
+FROM books
+GROUP BY genre;
 
 
+-- Get total fine amount collected from each member
+SELECT m.first_name || ' ' || m.last_name AS member_name, SUM(b.fine_amount) as total_fine_amount
+FROM borrowings b
+JOIN members m
+ON b.member_id = m.id
+GROUP BY m.first_name, m.last_name;
+
+
+-- Count how many books each author has written, ordered by count DESC
+SELECT a.name, COUNT(b.id) as book_count
+FROM authors a
+LEFT JOIN books b
+ON a.id = b.author_id
+GROUP BY a.id
+ORDER BY book_count DESC
+
+
+-- Get the most borrowed book (book with most borrowing records)
+SELECT b.title, COUNT(br.book_id) as book_count
+FROM borrowings br
+JOIN books b
+ON br.book_id = b.id
+WHERE br.status = 'borrowed'
+GROUP BY b.id
+ORDER BY book_count DESC
+LIMIT 1
 
 
 -- ============================================
