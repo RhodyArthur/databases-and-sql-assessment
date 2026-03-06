@@ -76,27 +76,44 @@ WHERE title ILIKE '%python%'
 SELECT b.title, a.name
 FROM books b
 INNER JOIN authors a
-WHERE b.author_id = a.id
+ON b.author_id = a.id
 
 
 -- LEFT JOIN: Get all authors and count of their books (include authors with 0 books)
 SELECT a.name, COUNT(b.author_id)
 FROM authors a
 LEFT JOIN books b
-WHERE a.id = b.author_id
-GROUP BY a.author_id
+ON a.id = b.author_id
+GROUP BY a.name
 
 
 -- Get all borrowings with member name and book title
--- Your SQL here
+SELECT b.title, m.first_name || ' ' || m.last_name AS member_name
+FROM borrowings br
+JOIN members m ON br.member_id = m.id
+JOIN books b ON br.book_id = b.id
 
 
 -- Get all members who have never borrowed a book (use LEFT JOIN and WHERE)
--- Your SQL here
+SELECT m.*
+FROM members m
+LEFT JOIN borrowings br
+ON m.id = br.member_id
+WHERE br.id IS NULL;
 
 
 -- Get books with their authors and genres (multiple joins)
--- Your SQL here
+SELECT 
+    b.title,
+    a.name AS author,
+    g.name AS genre
+FROM books b
+JOIN authors a 
+    ON b.author_id = a.id
+JOIN book_genres bg 
+    ON b.id = bg.book_id
+JOIN genres g 
+    ON bg.genre_id = g.id;
 
 
 
