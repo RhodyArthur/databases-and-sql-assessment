@@ -141,7 +141,7 @@ FROM authors a
 LEFT JOIN books b
 ON a.id = b.author_id
 GROUP BY a.id
-ORDER BY book_count DESC
+ORDER BY book_count DESC;
 
 
 -- Get the most borrowed book (book with most borrowing records)
@@ -152,7 +152,7 @@ ON br.book_id = b.id
 WHERE br.status = 'borrowed'
 GROUP BY b.id
 ORDER BY book_count DESC
-LIMIT 1
+LIMIT 1;
 
 
 -- ============================================
@@ -160,7 +160,47 @@ LIMIT 1
 -- ============================================
 
 -- Task 4.1: Subqueries
--- Your code here
+-- Get all books that are more expensive than the average book price
+SELECT *
+FROM books
+WHERE price > (
+    SELECT AVG(price)
+    FROM books
+);
+
+
+-- Get members who have borrowed books by a specific author (use subquery)
+SELECT *
+FROM members
+WHERE id IN (
+    SELECT br.member_id
+    FROM borrowings br
+    JOIN books b ON br.book_id = b.id
+    JOIN authors a ON b.author_id = a.id
+    WHERE a.name = 'Haruki Murakami'
+);
+
+
+-- Get authors whose books have been borrowed at least once (use EXISTS)
+SELECT *
+FROM authors a
+WHERE EXISTS (
+    SELECT 1
+    FROM books b
+    JOIN borrowings br ON br.book_id = b.id
+    WHERE b.author_id = a.id
+    AND br.status = 'borrowed'
+);
+
+
+-- Find books that have never been borrowed (use NOT IN or NOT EXISTS)
+SELECT *
+FROM books b
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM borrowings br
+    WHERE br.book_id = b.id
+);
 
 
 
