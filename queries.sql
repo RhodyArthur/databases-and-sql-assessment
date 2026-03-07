@@ -203,10 +203,32 @@ WHERE NOT EXISTS (
 );
 
 
-
-
 -- Task 4.2: Complex Queries with HAVING
--- Your code here
+-- Get authors who have written more than 2 books
+SELECT a.name, COUNT(b.id) as total_books
+FROM authors a
+JOIN books b
+ON a.id = b.author_id
+GROUP BY a.id, a.name
+HAVING total_books > 2;
+
+
+-- Get members who have total fines greater than $20
+SELECT  m.first_name || ' ' || m.last_name AS member_name, SUM(br.fine_amount) AS total_fines
+FROM members m
+JOIN borrowings br
+ON m.id = br.member_id
+GROUP BY m.id, m.first_name, m.last_name
+HAVING SUM(br.fine_amount) > 20;
+
+-- Get books that have been borrowed more than 3 times
+SELECT b.title, COUNT(br.id) AS cnt 
+FROM books b
+JOIN borrowings br
+ON b.id = br.book_id
+WHERE br.status = 'borrowed'
+GROUP BY b.id, b.title
+HAVING COUNT(br.id) > 3;
 
 
 
