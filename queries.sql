@@ -231,13 +231,41 @@ GROUP BY b.id, b.title
 HAVING COUNT(br.id) > 3;
 
 
-
-
 -- Task 4.3: Window Functions (Optional)
--- Your code here
+-- Rank books by price within each genre
+SELECT title, price, genre
+RANK() OVER (
+    PARTITION BY genre
+    ORDER BY price DESC
+) AS price_rank;
+FROM books
 
 
+-- Get running total of fine amounts by member
+SELECT
+    member_id,
+    fine_amount,
+    SUM(fine_amount) OVER (
+        PARTITION BY member_id
+        ORDER BY borrow_date
+    ) AS running_total
+FROM borrowings;
 
 
 -- Task 4.4: Transactions
--- Your code here
+--Write a transaction that:
+--Creates a new borrowing
+--Decreases available_copies for the book
+--Rolls back if available_copies would become negative
+
+BEGIN;
+
+UPDATE books
+SET available_copies = available_copies - 1
+WHERE id = 2
+AND available_copies > 0;
+
+INSERT INTO borrowings (member_id, book_id, borrow_date, due_date, status)
+VALUES (1, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days', 'borrowed');
+
+COMMIT;
