@@ -30,7 +30,13 @@ def create_connection():
     """
     Create and return a database connection
     """
-    pass
+    conn = psycopg2.connect(
+        dbname=DB_CONFIG['database'],
+        user=DB_CONFIG['user'],
+        password=DB_CONFIG['password'],
+        host=DB_CONFIG['host'],
+        port=DB_CONFIG['port']
+    )
 
 
 def execute_query(query, params=None):
