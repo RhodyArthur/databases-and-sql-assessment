@@ -106,7 +106,15 @@ class BookRepository:
         Update book price
         Return True if successful
         """
-        pass
+        self.cur.execute(
+            """UPDATE books 
+            SET price = %s 
+            WHERE id = %s;
+            """,
+            (new_price, book_id)
+        )
+        self.conn.commit()
+        return self.cur.rowcount > 0
     
     def delete_book(self, book_id):
         """
