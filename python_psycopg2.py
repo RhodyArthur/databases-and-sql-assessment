@@ -37,13 +37,17 @@ def create_connection():
         host=DB_CONFIG['host'],
         port=DB_CONFIG['port']
     )
+    return conn
 
 
 def execute_query(query, params=None):
     """
     Execute a query and return results
     """
-    pass
+    with create_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+        conn.close()
 
 
 # ============================================
@@ -55,8 +59,55 @@ class BookRepository:
     
     def __init__(self, connection):
         self.conn = connection
+        self.cur = self.conn.cursor()
     
-    # Your methods here
+    def create_book(self, title, isbn, author_id, publication_year, price):
+        """
+        Insert a new book
+        Return the created book's ID
+        """
+        # cur = self.conn.cursor()
+        self.cur.execute(
+            "INSERT INTO books (title, isbn, author_id, publication_year, price) VALUES (%s, %s, %s, %s, %s);",
+            (title, isbn, author_id, publication_year, price))
+    
+    def get_book_by_id(self, book_id):
+        """
+        Get a book by ID
+        Return dict with book data or None
+        """
+        self.cur.execute(
+            "SELECT * FROM books WHERE id = %s;",
+            (book_id,)
+        )
+    
+    def get_all_books(self, limit=10, offset=0):
+        """
+        Get all books with pagination
+        Return list of dicts
+        """
+        pass
+    
+    def update_book_price(self, book_id, new_price):
+        """
+        Update book price
+        Return True if successful
+        """
+        pass
+    
+    def delete_book(self, book_id):
+        """
+        Delete a book
+        Return True if successful
+        """
+        pass
+    
+    def search_books(self, keyword):
+        """
+        Search books by title (case-insensitive)
+        Return list of matching books
+        """
+        pass
 
 
 # ============================================
