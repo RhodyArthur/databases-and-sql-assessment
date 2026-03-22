@@ -8,6 +8,7 @@ from psycopg2 import pool
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from psycopg2.extras import RealDictCursor
 
 # Load environment variables
 load_dotenv()
@@ -40,14 +41,16 @@ def create_connection():
     return conn
 
 
-def execute_query(query, params=None):
+def execute_query(query, params=None, fetch=False):
     """
     Execute a query and return results
     """
     with create_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(query, params)
-        conn.close()
+        if fetch:
+            return cur.fetchall()
+
 
 
 # ============================================
@@ -59,7 +62,7 @@ class BookRepository:
     
     def __init__(self, connection):
         self.conn = connection
-        self.cur = self.conn.cursor()
+        self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
     
     def create_book(self, title, isbn, author_id, publication_year, price):
         """
@@ -68,8 +71,13 @@ class BookRepository:
         """
         # cur = self.conn.cursor()
         self.cur.execute(
-            "INSERT INTO books (title, isbn, author_id, publication_year, price) VALUES (%s, %s, %s, %s, %s);",
+            """INSERT INTO books (title, isbn, author_id, publication_year, price) 
+               VALUES (%s, %s, %s, %s, %s)
+               RETURNING id;""",
             (title, isbn, author_id, publication_year, price))
+        book_id = self.cur.fetchone()['id']
+        self.conn.commit()
+        return book_id
     
     def get_book_by_id(self, book_id):
         """
@@ -80,13 +88,18 @@ class BookRepository:
             "SELECT * FROM books WHERE id = %s;",
             (book_id,)
         )
+        return self.cur.fetchone()
     
     def get_all_books(self, limit=10, offset=0):
         """
         Get all books with pagination
         Return list of dicts
         """
-        pass
+        self.cur.execute(
+            "SELECT * FROM books ORDER BY id LIMIT %s OFFSET %s;",
+            (limit, offset)
+        )
+        return self.cur.fetchall()
     
     def update_book_price(self, book_id, new_price):
         """
