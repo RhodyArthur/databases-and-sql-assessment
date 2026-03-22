@@ -121,7 +121,15 @@ class BookRepository:
         Delete a book
         Return True if successful
         """
-        pass
+        self.cur.execute(
+            """DELETE *
+            FROM books
+            WHERE id = %s;
+            """,
+            (book_id,)
+        )
+        self.conn.commit()
+        return self.cur.rowcount > 0
     
     def search_books(self, keyword):
         """
