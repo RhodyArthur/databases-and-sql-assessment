@@ -136,7 +136,12 @@ class BookRepository:
         Search books by title (case-insensitive)
         Return list of matching books
         """
-        pass
+        self.cur.execute("""
+        SELECT * FROM books
+        WHERE title ILIKE %s;
+        """, (f"%{keyword}%",))
+        
+        return self.cur.fetchall()
 
 
 # ============================================
